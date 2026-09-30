@@ -110,16 +110,16 @@ local function lowerText(text)
 end
 
 local Theme = {
-	Background   = Color3.fromRGB(12, 14, 23),
-	BackgroundLo = Color3.fromRGB(7, 9, 16),
-	Panel        = Color3.fromRGB(18, 21, 34),
-	Element      = Color3.fromRGB(26, 30, 47),
-	ElementHover = Color3.fromRGB(37, 42, 64),
-	Accent       = Color3.fromRGB(145, 104, 255),
-	AccentSoft   = Color3.fromRGB(67, 216, 255),
-	Text         = Color3.fromRGB(246, 248, 255),
-	TextDim      = Color3.fromRGB(154, 164, 193),
-	Stroke       = Color3.fromRGB(59, 66, 95),
+    Background   = Color3.fromRGB(35, 22, 8),
+    BackgroundLo = Color3.fromRGB(17, 10, 3),
+    Panel        = Color3.fromRGB(74, 45, 12),
+    Element      = Color3.fromRGB(105, 65, 16),
+    ElementHover = Color3.fromRGB(145, 91, 23),
+    Accent       = Color3.fromRGB(255, 190, 55),
+    AccentSoft   = Color3.fromRGB(255, 235, 155),
+    Text         = Color3.fromRGB(255, 249, 225),
+    TextDim      = Color3.fromRGB(224, 190, 119),
+    Stroke       = Color3.fromRGB(177, 119, 35),
 	Font         = preferredFont("BuilderSansMedium", Enum.Font.GothamMedium),
 	FontBold     = preferredFont("BuilderSansBold", Enum.Font.GothamBold),
 	FontHeavy    = preferredFont("BuilderSansExtraBold", Enum.Font.GothamBlack),
@@ -143,6 +143,18 @@ local Glass = {
 --======================================================================--
 
 local Themes = {
+    ["Golden"] = {
+        Background = Color3.fromRGB(35, 22, 8),
+        BackgroundLo = Color3.fromRGB(17, 10, 3),
+        Panel = Color3.fromRGB(74, 45, 12),
+        Element = Color3.fromRGB(105, 65, 16),
+        ElementHover = Color3.fromRGB(145, 91, 23),
+        Accent = Color3.fromRGB(255, 190, 55),
+        AccentSoft = Color3.fromRGB(255, 235, 155),
+        Text = Color3.fromRGB(255, 249, 225),
+        TextDim = Color3.fromRGB(224, 190, 119),
+        Stroke = Color3.fromRGB(177, 119, 35),
+    },
 	["Midnight"] = {
 		Background = Color3.fromRGB(12, 14, 23),  BackgroundLo = Color3.fromRGB(7, 9, 16),
 		Panel      = Color3.fromRGB(18, 21, 34),  Element      = Color3.fromRGB(26, 30, 47),
@@ -674,6 +686,76 @@ local function addSheen(target, strength)
 	})
 	return sheen
 end
+
+local function addGoldenButterfly(parent, position, size, tint, delayTime)
+    if DeviceProfile.LowPower then
+        return nil
+    end
+
+    local butterfly = new("TextLabel", {
+        Name = "GoldenButterfly",
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = position,
+        Size = UDim2.fromOffset(size, size),
+        BackgroundTransparency = 1,
+        Text = "🦋",
+        TextColor3 = tint or Color3.fromRGB(255, 220, 115),
+        TextTransparency = 0.18,
+        TextSize = size,
+        Font = Enum.Font.SourceSansBold,
+        ZIndex = 1,
+        Parent = parent,
+    })
+
+    local scale = new("UIScale", {
+        Scale = 0.85,
+        Parent = butterfly,
+    })
+
+    task.delay(delayTime or 0, function()
+        if not butterfly.Parent then
+            return
+        end
+
+        local floatTween = TweenService:Create(
+            butterfly,
+            TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+            {
+                Position = UDim2.new(
+                    position.X.Scale,
+                    position.X.Offset + 8,
+                    position.Y.Scale,
+                    position.Y.Offset - 18
+                ),
+                Rotation = 10,
+                TextTransparency = 0.45,
+            }
+        )
+
+        local scaleTween = TweenService:Create(
+            scale,
+            TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+            {
+                Scale = 1.08,
+            }
+        )
+
+        floatTween:Play()
+        scaleTween:Play()
+
+        butterfly.Destroying:Connect(function()
+            pcall(function()
+                floatTween:Cancel()
+                scaleTween:Cancel()
+            end)
+        end)
+    end)
+
+    return butterfly
+end
+
+local function stroke(parent, color, thickness, transparency)
+
 
 local function stroke(parent, color, thickness, transparency)
 	return new("UIStroke", {
@@ -1359,6 +1441,46 @@ function Library:CreateWindow(config)
 	})
 	local mainShadows = addShadow(main, 5, 20, 0.88)
 	addSheen(main, 0.93)
+	local butterflyColors = {
+    Color3.fromRGB(255, 215, 100),
+    Color3.fromRGB(255, 235, 170),
+    Color3.fromRGB(255, 180, 70),
+    Color3.fromRGB(255, 245, 205),
+}
+
+addGoldenButterfly(
+    main,
+    UDim2.new(0.94, 0, 0.18, 0),
+    25,
+    butterflyColors[1],
+    0.1
+)
+
+addGoldenButterfly(
+    main,
+    UDim2.new(0.86, 0, 0.78, 0),
+    19,
+    butterflyColors[2],
+    0.8
+)
+
+addGoldenButterfly(
+    main,
+    UDim2.new(0.18, 0, 0.86, 0),
+    22,
+    butterflyColors[3],
+    1.4
+)
+
+addGoldenButterfly(
+    main,
+    UDim2.new(0.62, 0, 0.12, 0),
+    16,
+    butterflyColors[4],
+    2.1
+)
+
+
 
 	local introScale = new("UIScale", { Scale = 0.94, Parent = main })
 	spring(introScale, { Scale = 1 }, 0.5)
@@ -3972,7 +4094,7 @@ end
 --======================================================================--
 
 Library.Sounds       = Sounds
-Library.CurrentTheme = "Midnight"
+Library.CurrentTheme = "Golden"
 
 function Library:GetThemes()
 	local names = {}
@@ -4037,6 +4159,18 @@ function Library:SetTheme(name)
 	end
 	return true
 end
+
+    if type(sharedEnvironment.TikiSpawnerApplyTheme) == "function" then
+        pcall(sharedEnvironment.TikiSpawnerApplyTheme)
+    end
+    return true
+end
+
+pcall(function()
+    Library:SetTheme("Golden")
+end)
+
+function Library:GetLocales()
 
 function Library:GetLocales()
 	local codes = {}
