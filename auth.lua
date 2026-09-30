@@ -350,14 +350,15 @@ end
         return false, "Target compile error: " .. tostring(compileError)
     end
 
-    local okRun, runtimeError = pcall(chunk)
-
-    if not okRun then
-        return false, "Target runtime error: " .. tostring(runtimeError)
+local okRun, runtimeError = xpcall(function()
+    return chunk()
+end, function(err)
+    if debug and debug.traceback then
+        return debug.traceback(tostring(err), 2)
     end
 
-    return true
-end
+    return tostring(err)
+end)
 
 local function submitKey()
 	if busy then
