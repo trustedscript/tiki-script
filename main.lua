@@ -3972,7 +3972,7 @@ end
 --======================================================================--
 
 Library.Sounds       = Sounds
-Library.CurrentTheme = "Midnight"
+Library.CurrentTheme = "Obsidian"
 
 function Library:GetThemes()
 	local names = {}
