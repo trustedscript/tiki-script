@@ -1321,14 +1321,15 @@ function Library:CreateWindow(config)
 
 	local dragState = { Clamp = config.ClampToScreen ~= false }
 
-	local screenGui = new("ScreenGui", {
-		Name           = "SimpleUI",
-		ResetOnSpawn   = false,
-		IgnoreGuiInset = true,
-		DisplayOrder   = 999,
-		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-		Parent         = PlayerGui,
-	})
+local screenGui = new("ScreenGui", {
+    Name           = "SimpleUI",
+    ResetOnSpawn   = false,
+    IgnoreGuiInset = true,
+    DisplayOrder   = 999,
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+    Enabled        = true,
+    Parent         = PlayerGui,
+})
 	if profile.Touch then
 		pcall(function() screenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets end)
 		pcall(function() screenGui.ClipToDeviceSafeArea = true end)
@@ -2030,16 +2031,25 @@ function Library:CreateWindow(config)
 		end)
 	end)
 
-	track(UserInputService.InputBegan:Connect(function(input, processed)
-		if processed then return end
-		if input.KeyCode == keybind then
-			screenGui.Enabled = not screenGui.Enabled
-		end
-	end))
+track(UserInputService.InputBegan:Connect(function(input)
+    if input.UserInputType ~= Enum.UserInputType.Keyboard then
+        return
+    end
 
-	function Window:Toggle()
-		screenGui.Enabled = not screenGui.Enabled
-	end
+    if input.KeyCode == keybind then
+        screenGui.Enabled = not screenGui.Enabled
+        print("[TikiHub] RightControl pressed. UI enabled:", screenGui.Enabled)
+    end
+end))
+
+function Window:Toggle()
+    if not screenGui or not screenGui.Parent then
+        return
+    end
+
+    screenGui.Enabled = not screenGui.Enabled
+    print("[TikiHub] Window toggled. Enabled:", screenGui.Enabled)
+end
 
 	function Window:SetClamp(enabled)
 		dragState.Clamp = enabled and true or false
@@ -4677,7 +4687,14 @@ function TikiCompat:CreateWindow(_config)
 	})
 
 	self.Window = baseWindow
+	print("[TikiHub] CreateWindow completed")
+print("[TikiHub] GUI:", baseWindow.Gui)
+print("[TikiHub] GUI parent:", baseWindow.Gui and baseWindow.Gui.Parent)
+print("[TikiHub] GUI enabled:", baseWindow.Gui and baseWindow.Gui.Enabled)
 
+if baseWindow.Gui then
+    baseWindow.Gui.Enabled = true
+end
 	if baseWindow.Gui then
 		baseWindow.Gui.Destroying:Connect(function()
 			if not TikiCompat.Unloaded then
@@ -29129,13 +29146,17 @@ if not __backendChunk then
     error("[TikiHub] BACKEND COMPILE ERROR: " .. tostring(__backendCompileError))
 end
 
-local __backendOk, __backendRuntimeError = pcall(__backendChunk)
-if not __backendOk then
-    warn("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
-    __env.__TikiHubLastError = tostring(__backendRuntimeError)
-    local ok, result = pcall(function()
-    -- backend code
+local __backendOk, __backendError = xpcall(__backendChunk, function(__error)
+    if debug and debug.traceback then
+        return debug.traceback(tostring(__error), 2)
+    end
+
+    return tostring(__error)
 end)
+
+if not __backendOk then
+    error("[TikiHub] BACKEND RUNTIME ERROR:\n" .. tostring(__backendError))
+end
 
 if not ok then
     error("[TikiHub] Backend error: " .. tostring(result))
