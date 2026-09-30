@@ -150,48 +150,6 @@ local Themes = {
 		AccentSoft = Color3.fromRGB(150, 255, 190), Text       = Color3.fromRGB(232, 245, 238),
 		TextDim    = Color3.fromRGB(138, 165, 152), Stroke     = Color3.fromRGB(40, 64, 54),
 	},
-	["Midnight"] = {
-		Background = Color3.fromRGB(12, 14, 23),  BackgroundLo = Color3.fromRGB(7, 9, 16),
-		Panel      = Color3.fromRGB(18, 21, 34),  Element      = Color3.fromRGB(26, 30, 47),
-		ElementHover = Color3.fromRGB(37, 42, 64), Accent      = Color3.fromRGB(145, 104, 255),
-		AccentSoft = Color3.fromRGB(67, 216, 255), Text        = Color3.fromRGB(246, 248, 255),
-		TextDim    = Color3.fromRGB(154, 164, 193), Stroke     = Color3.fromRGB(59, 66, 95),
-	},
-	["Obsidian"] = {
-		Background = Color3.fromRGB(14, 14, 16),  BackgroundLo = Color3.fromRGB(9, 9, 11),
-		Panel      = Color3.fromRGB(11, 11, 13),  Element      = Color3.fromRGB(26, 26, 30),
-		ElementHover = Color3.fromRGB(38, 38, 44), Accent      = Color3.fromRGB(248, 248, 252),
-		AccentSoft = Color3.fromRGB(170, 170, 180), Text       = Color3.fromRGB(245, 245, 248),
-		TextDim    = Color3.fromRGB(130, 130, 140), Stroke     = Color3.fromRGB(40, 40, 46),
-	},
-	["Violet"] = {
-		Background = Color3.fromRGB(24, 18, 34),  BackgroundLo = Color3.fromRGB(17, 12, 25),
-		Panel      = Color3.fromRGB(20, 14, 29),  Element      = Color3.fromRGB(38, 28, 54),
-		ElementHover = Color3.fromRGB(52, 38, 72), Accent      = Color3.fromRGB(186, 110, 255),
-		AccentSoft = Color3.fromRGB(255, 130, 220), Text       = Color3.fromRGB(240, 234, 250),
-		TextDim    = Color3.fromRGB(160, 145, 185), Stroke     = Color3.fromRGB(58, 44, 80),
-	},
-	["Crimson"] = {
-		Background = Color3.fromRGB(28, 17, 20),  BackgroundLo = Color3.fromRGB(20, 12, 14),
-		Panel      = Color3.fromRGB(24, 14, 17),  Element      = Color3.fromRGB(44, 26, 31),
-		ElementHover = Color3.fromRGB(60, 34, 40), Accent      = Color3.fromRGB(255, 88, 110),
-		AccentSoft = Color3.fromRGB(255, 160, 120), Text       = Color3.fromRGB(248, 234, 236),
-		TextDim    = Color3.fromRGB(176, 142, 148), Stroke     = Color3.fromRGB(66, 40, 46),
-	},
-	["Ocean"] = {
-		Background = Color3.fromRGB(14, 24, 34),  BackgroundLo = Color3.fromRGB(10, 17, 25),
-		Panel      = Color3.fromRGB(12, 20, 29),  Element      = Color3.fromRGB(24, 40, 55),
-		ElementHover = Color3.fromRGB(34, 55, 74), Accent      = Color3.fromRGB(70, 190, 255),
-		AccentSoft = Color3.fromRGB(120, 255, 240), Text       = Color3.fromRGB(230, 242, 250),
-		TextDim    = Color3.fromRGB(135, 160, 180), Stroke     = Color3.fromRGB(38, 60, 80),
-	},
-	["Daylight"] = {
-		Background = Color3.fromRGB(242, 243, 247), BackgroundLo = Color3.fromRGB(228, 230, 238),
-		Panel      = Color3.fromRGB(250, 250, 253), Element      = Color3.fromRGB(232, 234, 242),
-		ElementHover = Color3.fromRGB(218, 221, 233), Accent     = Color3.fromRGB(88, 104, 255),
-		AccentSoft = Color3.fromRGB(120, 190, 255), Text        = Color3.fromRGB(28, 30, 38),
-		TextDim    = Color3.fromRGB(110, 115, 130), Stroke      = Color3.fromRGB(206, 210, 222),
-	},
 }
 
 local themeBindings    = {}   -- { Instance, Property, Key }
