@@ -33,6 +33,14 @@ local __uiSource = [==============[--[[
 =======================================================================
 ]]
 
+do
+	local runtimeEnvironment = (getgenv and getgenv()) or _G
+	local previousTikiHubUnload = runtimeEnvironment.__TikiHubUnload
+	if type(previousTikiHubUnload) == "function" then
+		pcall(previousTikiHubUnload)
+	end
+	runtimeEnvironment.__TikiHubUnload = nil
+end
 
 local Players          = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -102,16 +110,16 @@ local function lowerText(text)
 end
 
 local Theme = {
-    Background   = Color3.fromRGB(35, 22, 8),
-    BackgroundLo = Color3.fromRGB(17, 10, 3),
-    Panel        = Color3.fromRGB(74, 45, 12),
-    Element      = Color3.fromRGB(105, 65, 16),
-    ElementHover = Color3.fromRGB(145, 91, 23),
-    Accent       = Color3.fromRGB(255, 190, 55),
-    AccentSoft   = Color3.fromRGB(255, 235, 155),
-    Text         = Color3.fromRGB(255, 249, 225),
-    TextDim      = Color3.fromRGB(224, 190, 119),
-    Stroke       = Color3.fromRGB(177, 119, 35),
+	Background   = Color3.fromRGB(12, 14, 23),
+	BackgroundLo = Color3.fromRGB(7, 9, 16),
+	Panel        = Color3.fromRGB(18, 21, 34),
+	Element      = Color3.fromRGB(26, 30, 47),
+	ElementHover = Color3.fromRGB(37, 42, 64),
+	Accent       = Color3.fromRGB(145, 104, 255),
+	AccentSoft   = Color3.fromRGB(67, 216, 255),
+	Text         = Color3.fromRGB(246, 248, 255),
+	TextDim      = Color3.fromRGB(154, 164, 193),
+	Stroke       = Color3.fromRGB(59, 66, 95),
 	Font         = preferredFont("BuilderSansMedium", Enum.Font.GothamMedium),
 	FontBold     = preferredFont("BuilderSansBold", Enum.Font.GothamBold),
 	FontHeavy    = preferredFont("BuilderSansExtraBold", Enum.Font.GothamBlack),
@@ -135,18 +143,6 @@ local Glass = {
 --======================================================================--
 
 local Themes = {
-    ["Golden"] = {
-        Background = Color3.fromRGB(35, 22, 8),
-        BackgroundLo = Color3.fromRGB(17, 10, 3),
-        Panel = Color3.fromRGB(74, 45, 12),
-        Element = Color3.fromRGB(105, 65, 16),
-        ElementHover = Color3.fromRGB(145, 91, 23),
-        Accent = Color3.fromRGB(255, 190, 55),
-        AccentSoft = Color3.fromRGB(255, 235, 155),
-        Text = Color3.fromRGB(255, 249, 225),
-        TextDim = Color3.fromRGB(224, 190, 119),
-        Stroke = Color3.fromRGB(177, 119, 35),
-    },
 	["Midnight"] = {
 		Background = Color3.fromRGB(12, 14, 23),  BackgroundLo = Color3.fromRGB(7, 9, 16),
 		Panel      = Color3.fromRGB(18, 21, 34),  Element      = Color3.fromRGB(26, 30, 47),
@@ -680,13 +676,13 @@ local function addSheen(target, strength)
 end
 
 local function stroke(parent, color, thickness, transparency)
-    return new("UIStroke", {
-        Color           = color or Theme.Stroke,
-        Thickness       = thickness or 1,
-        Transparency    = transparency or 0,
-        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-        Parent          = parent,
-    })
+	return new("UIStroke", {
+		Color           = color or Theme.Stroke,
+		Thickness       = thickness or 1,
+		Transparency    = transparency or 0,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Parent          = parent,
+	})
 end
 
 -- A moving neon highlight used by the window edge and every active feature.
@@ -1313,15 +1309,14 @@ function Library:CreateWindow(config)
 
 	local dragState = { Clamp = config.ClampToScreen ~= false }
 
-local screenGui = new("ScreenGui", {
-    Name           = "SimpleUI",
-    ResetOnSpawn   = false,
-    IgnoreGuiInset = true,
-    DisplayOrder   = 999,
-    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-    Enabled        = true,
-    Parent         = PlayerGui,
-})
+	local screenGui = new("ScreenGui", {
+		Name           = "SimpleUI",
+		ResetOnSpawn   = false,
+		IgnoreGuiInset = true,
+		DisplayOrder   = 999,
+		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		Parent         = PlayerGui,
+	})
 	if profile.Touch then
 		pcall(function() screenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets end)
 		pcall(function() screenGui.ClipToDeviceSafeArea = true end)
@@ -1364,10 +1359,6 @@ local screenGui = new("ScreenGui", {
 	})
 	local mainShadows = addShadow(main, 5, 20, 0.88)
 	addSheen(main, 0.93)
-
--- Golden butterflies disabled: addGoldenButterfly is not defined.
-
-
 
 	local introScale = new("UIScale", { Scale = 0.94, Parent = main })
 	spring(introScale, { Scale = 1 }, 0.5)
@@ -2023,35 +2014,16 @@ local screenGui = new("ScreenGui", {
 		end)
 	end)
 
-track(UserInputService.InputBegan:Connect(function(input, processed)
-    if input.UserInputType ~= Enum.UserInputType.Keyboard then
-        return
-    end
+	track(UserInputService.InputBegan:Connect(function(input, processed)
+		if processed then return end
+		if input.KeyCode == keybind then
+			screenGui.Enabled = not screenGui.Enabled
+		end
+	end))
 
-    if input.KeyCode ~= keybind then
-        return
-    end
-
-    screenGui.Enabled = not screenGui.Enabled
-
-    print(
-        "[TikiHub] keybind pressed:",
-        input.KeyCode.Name,
-        "processed:",
-        processed,
-        "enabled:",
-        screenGui.Enabled
-    )
-end))
-
-function Window:Toggle()
-    if not screenGui or not screenGui.Parent then
-        return
-    end
-
-    screenGui.Enabled = not screenGui.Enabled
-    print("[TikiHub] Window toggled. Enabled:", screenGui.Enabled)
-end
+	function Window:Toggle()
+		screenGui.Enabled = not screenGui.Enabled
+	end
 
 	function Window:SetClamp(enabled)
 		dragState.Clamp = enabled and true or false
@@ -4000,7 +3972,7 @@ end
 --======================================================================--
 
 Library.Sounds       = Sounds
-Library.CurrentTheme = "Golden"
+Library.CurrentTheme = "Midnight"
 
 function Library:GetThemes()
 	local names = {}
@@ -4067,7 +4039,6 @@ function Library:SetTheme(name)
 end
 
 function Library:GetLocales()
-
 	local codes = {}
 	for code in pairs(Locales) do
 		table.insert(codes, code)
@@ -4677,12 +4648,9 @@ end
 ((getgenv and getgenv()) or _G).__TikiHubUnload = TikiCompat._runtimeUnloadHandle
 
 function TikiCompat:CreateWindow(_config)
-    self.Unloaded = false
+	self.Unloaded = false
 
-    print("[TikiHub] TikiCompat:CreateWindow called")
-    print("[TikiHub] Library.CreateWindow:", Library.CreateWindow)
-
-    local baseWindow = Library:CreateWindow({
+	local baseWindow = Library:CreateWindow({
 		Title = "Tiki Hub",
 		Subtitle = "Slayers 2  ·  made by Tiki  ·  Right Ctrl to hide",
 		Size = UDim2.fromOffset(820, 610),
@@ -4691,22 +4659,8 @@ function TikiCompat:CreateWindow(_config)
 		ClampToScreen = true,
 	})
 
-	    if not baseWindow then
-        error("[TikiHub] Library:CreateWindow returned nil")
-    end
+	self.Window = baseWindow
 
-    self.Window = baseWindow
-
-    print("[TikiHub] base window created:", baseWindow)
-    print("[TikiHub] base GUI:", baseWindow.Gui)
-	print("[TikiHub] CreateWindow completed")
-print("[TikiHub] GUI:", baseWindow.Gui)
-print("[TikiHub] GUI parent:", baseWindow.Gui and baseWindow.Gui.Parent)
-print("[TikiHub] GUI enabled:", baseWindow.Gui and baseWindow.Gui.Enabled)
-
-if baseWindow.Gui then
-    baseWindow.Gui.Enabled = true
-end
 	if baseWindow.Gui then
 		baseWindow.Gui.Destroying:Connect(function()
 			if not TikiCompat.Unloaded then
@@ -4900,31 +4854,17 @@ if not __uiChunk then
     error("[TikiHub] UI COMPILE ERROR: " .. tostring(__uiCompileError))
 end
 
-local __uiOk, __compatOrError = xpcall(__uiChunk, function(__error)
-    if debug and debug.traceback then
-        return debug.traceback(tostring(__error), 2)
-    end
-
-    return tostring(__error)
-end)
-
+local __uiOk, __compatOrError = pcall(__uiChunk)
 if not __uiOk then
-    error("[TikiHub] UI RUNTIME ERROR:\n" .. tostring(__compatOrError))
+    error("[TikiHub] UI RUNTIME ERROR: " .. tostring(__compatOrError))
 end
 
 if type(__compatOrError) ~= "table" then
-    error(
-        "[TikiHub] UI shell returned "
-        .. tostring(type(__compatOrError))
-        .. ", expected table"
-    )
+    error("[TikiHub] UI shell returned " .. typeof(__compatOrError) .. ", expected table")
 end
 
 __env.__TikiHubSlayers2Compat = __compatOrError
-
 print("[TikiHub] loader v3: UI shell ready")
-print("[TikiHub] compatibility adapter:", __compatOrError)
-print("[TikiHub] CreateWindow function:", __compatOrError.CreateWindow)
 print("[TikiHub] loader v3: compiling Slayers 2 backend...")
 
 local __backendSource = [==================[local __TikiEnv = (getgenv and getgenv()) or _G
@@ -29160,22 +29100,16 @@ end
 v365()
 ]==================]
 local __backendChunk, __backendCompileError = loadstring(__backendSource)
-
 if not __backendChunk then
     __env.__TikiHubSlayers2Compat = nil
     error("[TikiHub] BACKEND COMPILE ERROR: " .. tostring(__backendCompileError))
 end
 
-local __backendOk, __backendError = xpcall(__backendChunk, function(__error)
-    if debug and debug.traceback then
-        return debug.traceback(tostring(__error), 2)
-    end
-
-    return tostring(__error)
-end)
-
+local __backendOk, __backendRuntimeError = pcall(__backendChunk)
 if not __backendOk then
-    error("[TikiHub] BACKEND RUNTIME ERROR:\n" .. tostring(__backendError))
+    warn("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
+    __env.__TikiHubLastError = tostring(__backendRuntimeError)
+    error("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
 end
 
 print("[TikiHub] loader v3: backend loaded successfully")
