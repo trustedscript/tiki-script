@@ -4756,30 +4756,7 @@ function Library:CreateWindow(config)
     return window
 end
 
-function TikiCompat:SetTheme(name)
-    Library:SetTheme(name)
-    Library:SetButterflies(nil, name)
-end
 
-function TikiCompat:GetThemes()
-    return Library:GetThemes()
-end
-
-function TikiCompat:GetCurrentTheme()
-    return Library.CurrentTheme
-end
-
-function TikiCompat:SetButterflies(enabled)
-    Library:SetButterflies(enabled)
-end
-
-function TikiCompat:SetButterflyCount(n)
-    Library:SetButterflyCount(n)
-end
-
-function TikiCompat:ButterfliesEnabled()
-    return Library.ButterflySettings.Enabled == true
-end
 
 
 local TikiCompat = {
@@ -5061,7 +5038,30 @@ function TikiCompat:CreateWindow(_config)
 	return windowProxy
 end
 
+function TikiCompat:SetTheme(name)
+    Library:SetTheme(name)
+    Library:SetButterflies(nil, name)
+end
 
+function TikiCompat:GetThemes()
+    return Library:GetThemes()
+end
+
+function TikiCompat:GetCurrentTheme()
+    return Library.CurrentTheme
+end
+
+function TikiCompat:SetButterflies(enabled)
+    Library:SetButterflies(enabled)
+end
+
+function TikiCompat:SetButterflyCount(n)
+    Library:SetButterflyCount(n)
+end
+
+function TikiCompat:ButterfliesEnabled()
+    return Library.ButterflySettings.Enabled == true
+end
 
 return TikiCompat
 ]==============]
