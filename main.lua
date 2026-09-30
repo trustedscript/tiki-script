@@ -687,72 +687,6 @@ local function addSheen(target, strength)
 	return sheen
 end
 
-local function addGoldenButterfly(parent, position, size, tint, delayTime)
-    if DeviceProfile.LowPower then
-        return nil
-    end
-
-    local butterfly = new("TextLabel", {
-        Name = "GoldenButterfly",
-        AnchorPoint = Vector2.new(0.5, 0.5),
-        Position = position,
-        Size = UDim2.fromOffset(size, size),
-        BackgroundTransparency = 1,
-        Text = "🦋",
-        TextColor3 = tint or Color3.fromRGB(255, 220, 115),
-        TextTransparency = 0.18,
-        TextSize = size,
-        Font = Enum.Font.SourceSansBold,
-        ZIndex = 1,
-        Parent = parent,
-    })
-
-    local scale = new("UIScale", {
-        Scale = 0.85,
-        Parent = butterfly,
-    })
-
-    task.delay(delayTime or 0, function()
-        if not butterfly.Parent then
-            return
-        end
-
-        local floatTween = TweenService:Create(
-            butterfly,
-            TweenInfo.new(3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-            {
-                Position = UDim2.new(
-                    position.X.Scale,
-                    position.X.Offset + 8,
-                    position.Y.Scale,
-                    position.Y.Offset - 18
-                ),
-                Rotation = 10,
-                TextTransparency = 0.45,
-            }
-        )
-
-        local scaleTween = TweenService:Create(
-            scale,
-            TweenInfo.new(1.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-            {
-                Scale = 1.08,
-            }
-        )
-
-        floatTween:Play()
-        scaleTween:Play()
-
-        butterfly.Destroying:Connect(function()
-            pcall(function()
-                floatTween:Cancel()
-                scaleTween:Cancel()
-            end)
-        end)
-    end)
-
-    return butterfly
-end
 
 local function stroke(parent, color, thickness, transparency)
 
@@ -4166,9 +4100,6 @@ end
     return true
 end
 
-pcall(function()
-    Library:SetTheme("Golden")
-end)
 
 function Library:GetLocales()
 
