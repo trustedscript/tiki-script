@@ -143,6 +143,13 @@ local Glass = {
 --======================================================================--
 
 local Themes = {
+	["Emerald"] = {
+		Background = Color3.fromRGB(16, 26, 22),  BackgroundLo = Color3.fromRGB(11, 19, 16),
+		Panel      = Color3.fromRGB(13, 22, 19),  Element      = Color3.fromRGB(26, 42, 35),
+		ElementHover = Color3.fromRGB(36, 58, 48), Accent      = Color3.fromRGB(72, 230, 160),
+		AccentSoft = Color3.fromRGB(150, 255, 190), Text       = Color3.fromRGB(232, 245, 238),
+		TextDim    = Color3.fromRGB(138, 165, 152), Stroke     = Color3.fromRGB(40, 64, 54),
+	},
 	["Midnight"] = {
 		Background = Color3.fromRGB(12, 14, 23),  BackgroundLo = Color3.fromRGB(7, 9, 16),
 		Panel      = Color3.fromRGB(18, 21, 34),  Element      = Color3.fromRGB(26, 30, 47),
@@ -163,13 +170,6 @@ local Themes = {
 		ElementHover = Color3.fromRGB(52, 38, 72), Accent      = Color3.fromRGB(186, 110, 255),
 		AccentSoft = Color3.fromRGB(255, 130, 220), Text       = Color3.fromRGB(240, 234, 250),
 		TextDim    = Color3.fromRGB(160, 145, 185), Stroke     = Color3.fromRGB(58, 44, 80),
-	},
-	["Emerald"] = {
-		Background = Color3.fromRGB(16, 26, 22),  BackgroundLo = Color3.fromRGB(11, 19, 16),
-		Panel      = Color3.fromRGB(13, 22, 19),  Element      = Color3.fromRGB(26, 42, 35),
-		ElementHover = Color3.fromRGB(36, 58, 48), Accent      = Color3.fromRGB(72, 230, 160),
-		AccentSoft = Color3.fromRGB(150, 255, 190), Text       = Color3.fromRGB(232, 245, 238),
-		TextDim    = Color3.fromRGB(138, 165, 152), Stroke     = Color3.fromRGB(40, 64, 54),
 	},
 	["Crimson"] = {
 		Background = Color3.fromRGB(28, 17, 20),  BackgroundLo = Color3.fromRGB(20, 12, 14),
