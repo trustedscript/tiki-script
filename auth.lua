@@ -3,9 +3,9 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
 
-local CORRECT_KEY = "TikiProfas"
+local CORRECT_KEY = "Tiki Profas"
 
-local DISCORD_INVITE = "https://discord.gg/qa8GSKRbY"
+local DISCORD_INVITE = "https://discord.gg/2D3atd73y"
 
 local ENV = getgenv and getgenv() or _G
 
