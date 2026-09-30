@@ -687,18 +687,14 @@ local function addSheen(target, strength)
 	return sheen
 end
 
-
 local function stroke(parent, color, thickness, transparency)
-
-
-local function stroke(parent, color, thickness, transparency)
-	return new("UIStroke", {
-		Color           = color or Theme.Stroke,
-		Thickness       = thickness or 1,
-		Transparency    = transparency or 0,
-		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		Parent          = parent,
-	})
+    return new("UIStroke", {
+        Color           = color or Theme.Stroke,
+        Thickness       = thickness or 1,
+        Transparency    = transparency or 0,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Parent          = parent,
+    })
 end
 
 -- A moving neon highlight used by the window edge and every active feature.
@@ -1375,12 +1371,12 @@ function Library:CreateWindow(config)
 	})
 	local mainShadows = addShadow(main, 5, 20, 0.88)
 	addSheen(main, 0.93)
-	local butterflyColors = {
-    Color3.fromRGB(255, 215, 100),
-    Color3.fromRGB(255, 235, 170),
-    Color3.fromRGB(255, 180, 70),
-    Color3.fromRGB(255, 245, 205),
-}
+-- 	local butterflyColors = {
+--     Color3.fromRGB(255, 215, 100),
+--     Color3.fromRGB(255, 235, 170),
+--     Color3.fromRGB(255, 180, 70),
+--     Color3.fromRGB(255, 245, 205),
+-- }
 
 addGoldenButterfly(
     main,
@@ -4094,16 +4090,8 @@ function Library:SetTheme(name)
 	return true
 end
 
-    if type(sharedEnvironment.TikiSpawnerApplyTheme) == "function" then
-        pcall(sharedEnvironment.TikiSpawnerApplyTheme)
-    end
-    return true
-end
-
-
 function Library:GetLocales()
 
-function Library:GetLocales()
 	local codes = {}
 	for code in pairs(Locales) do
 		table.insert(codes, code)
