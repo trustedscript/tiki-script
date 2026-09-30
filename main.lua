@@ -29162,7 +29162,13 @@ local __backendOk, __backendRuntimeError = pcall(__backendChunk)
 if not __backendOk then
     warn("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
     __env.__TikiHubLastError = tostring(__backendRuntimeError)
-    error("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
+    local ok, result = pcall(function()
+    -- backend code
+end)
+
+if not ok then
+    error("[TikiHub] Backend error: " .. tostring(result))
+end
 end
 
 print("[TikiHub] loader v3: backend loaded successfully")
