@@ -1356,11 +1356,12 @@ function Library:CreateWindow(config)
 		BackgroundTransparency = Glass.Topbar,
 		BorderSizePixel  = 0,
 		Active           = true,
+		ClipsDescendants = true,
 		Parent           = main,
 	})
 
 	local topbarSquarePatches = roundSide(topbar, WINDOW_RADIUS, "bottom")
-	local topbarSheen = addSheen(topbar, 0.92)
+	local topbarSheen = nil
 
 	local underline = new("Frame", {
 		Size             = UDim2.new(1, 0, 0, 2),
@@ -1524,10 +1525,11 @@ function Library:CreateWindow(config)
 		BackgroundColor3 = blendWithBackground("Panel", "BackgroundLo", 0.35),
 		BackgroundTransparency = Glass.Panel,
 		BorderSizePixel  = 0,
+		ClipsDescendants = true,
 		Parent           = body,
 	})
 
-	roundSide(sidebar, WINDOW_RADIUS, "topright")
+	corner(sidebar, WINDOW_RADIUS)
 	addRestyler(function()
 		if sidebar.Parent then
 			sidebar.BackgroundColor3 = blendWithBackground("Panel", "BackgroundLo", 0.35)
@@ -1549,10 +1551,11 @@ function Library:CreateWindow(config)
 		Parent    = tabList,
 	})
 	new("UIPadding", {
-		PaddingTop   = UDim.new(0, 12),
-		PaddingLeft  = UDim.new(0, 10),
-		PaddingRight = UDim.new(0, 10),
-		Parent       = tabList,
+		PaddingTop    = UDim.new(0, 12),
+		PaddingBottom = UDim.new(0, 68),
+		PaddingLeft   = UDim.new(0, 10),
+		PaddingRight  = UDim.new(0, 10),
+		Parent        = tabList,
 	})
 
 	local divider = new("Frame", {
@@ -1587,6 +1590,7 @@ function Library:CreateWindow(config)
 		BackgroundColor3 = Theme.Panel,
 		BackgroundTransparency = Glass.Panel,
 		BorderSizePixel = 0,
+		ClipsDescendants = true,
 		ZIndex = 30,
 		Parent = sidebar,
 	})
@@ -2994,7 +2998,7 @@ function Library:CreateWindow(config)
 					Size                   = UDim2.new(0, 18, 1, 0),
 					Position               = UDim2.new(1, -22, 0, 0),
 					BackgroundTransparency = 1,
-					Text                   = "⌄",
+					Text                   = "v",
 					TextColor3             = Theme.TextDim,
 					TextSize               = 12,
 					Font                   = Theme.FontBold,
