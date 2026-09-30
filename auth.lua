@@ -3,7 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
 
-local CORRECT_KEY = "ddd"
+local CORRECT_KEY = "lol"
 
 local DISCORD_INVITE = "https://discord.gg/UPxPuNAkq"
 
@@ -423,6 +423,8 @@ local ok, err = loadTarget(TARGET_URL)
 if not ok then
     checkButton.Text = "ERROR"
     status.Text = tostring(err)
+	warn("[TikiAuth] " .. tostring(err))
+	print("[TikiAuth] " .. tostring(err))
     busy = false
 
     TweenService:Create(
