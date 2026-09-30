@@ -143,6 +143,18 @@ local Glass = {
 --======================================================================--
 
 local Themes = {
+	["Crimson"] = {
+		Background   = Color3.fromRGB(20, 10, 12),
+		BackgroundLo = Color3.fromRGB(30, 10, 20),
+		Panel        = Color3.fromRGB(75, 15, 25),
+		Element      = Color3.fromRGB(95, 20, 30),
+		ElementHover = Color3.fromRGB(140, 30, 40),
+		Accent       = Color3.fromRGB(220, 40, 60),
+		AccentSoft   = Color3.fromRGB(255, 100, 110),
+		Text         = Color3.fromRGB(245, 230, 232),
+		TextDim      = Color3.fromRGB(180, 145, 150),
+		Stroke       = Color3.fromRGB(120, 30, 45),
+	},
 	["Emerald"] = {
 		Background = Color3.fromRGB(16, 26, 22),  BackgroundLo = Color3.fromRGB(11, 19, 16),
 		Panel      = Color3.fromRGB(13, 22, 19),  Element      = Color3.fromRGB(26, 42, 35),
@@ -4534,6 +4546,7 @@ Library.ButterflySettings = {
 }
 
 Library.ButterflyPalette = {
+	Crimson  = { Color3.fromRGB(220, 40, 60),  Color3.fromRGB(255, 100, 110) },
     Golden   = { Color3.fromRGB(255, 200, 80),  Color3.fromRGB(255, 235, 155) },
     Midnight = { Color3.fromRGB(145, 104, 255), Color3.fromRGB(67, 216, 255) },
     Obsidian = { Color3.fromRGB(240, 240, 245), Color3.fromRGB(170, 170, 180) },
