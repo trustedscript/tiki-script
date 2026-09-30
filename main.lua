@@ -1371,44 +1371,8 @@ function Library:CreateWindow(config)
 	})
 	local mainShadows = addShadow(main, 5, 20, 0.88)
 	addSheen(main, 0.93)
--- 	local butterflyColors = {
---     Color3.fromRGB(255, 215, 100),
---     Color3.fromRGB(255, 235, 170),
---     Color3.fromRGB(255, 180, 70),
---     Color3.fromRGB(255, 245, 205),
--- }
 
-addGoldenButterfly(
-    main,
-    UDim2.new(0.94, 0, 0.18, 0),
-    25,
-    butterflyColors[1],
-    0.1
-)
-
-addGoldenButterfly(
-    main,
-    UDim2.new(0.86, 0, 0.78, 0),
-    19,
-    butterflyColors[2],
-    0.8
-)
-
-addGoldenButterfly(
-    main,
-    UDim2.new(0.18, 0, 0.86, 0),
-    22,
-    butterflyColors[3],
-    1.4
-)
-
-addGoldenButterfly(
-    main,
-    UDim2.new(0.62, 0, 0.12, 0),
-    16,
-    butterflyColors[4],
-    2.1
-)
+-- Golden butterflies disabled: addGoldenButterfly is not defined.
 
 
 
@@ -4907,9 +4871,16 @@ if not __uiChunk then
     error("[TikiHub] UI COMPILE ERROR: " .. tostring(__uiCompileError))
 end
 
-local __uiOk, __compatOrError = pcall(__uiChunk)
+local __uiOk, __compatOrError = xpcall(__uiChunk, function(__error)
+    if debug and debug.traceback then
+        return debug.traceback(tostring(__error), 2)
+    end
+
+    return tostring(__error)
+end)
+
 if not __uiOk then
-    error("[TikiHub] UI RUNTIME ERROR: " .. tostring(__compatOrError))
+    error("[TikiHub] UI RUNTIME ERROR:\n" .. tostring(__compatOrError))
 end
 
 if type(__compatOrError) ~= "table" then
