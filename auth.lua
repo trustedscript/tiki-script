@@ -5,7 +5,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local CORRECT_KEY = "Tiki Profas"
 
-local DISCORD_INVITE = "https://discord.gg/aDJMHmQBb"
+local DISCORD_INVITE = "https://discord.gg/2D3atd73y"
 
 local TARGET_URL =
     "https://raw.githubusercontent.com/trustedscript/tiki-script/main/main.lua"
@@ -350,15 +350,14 @@ end
         return false, "Target compile error: " .. tostring(compileError)
     end
 
-local okRun, runtimeError = xpcall(function()
-    return chunk()
-end, function(err)
-    if debug and debug.traceback then
-        return debug.traceback(tostring(err), 2)
+    local okRun, runtimeError = pcall(chunk)
+
+    if not okRun then
+        return false, "Target runtime error: " .. tostring(runtimeError)
     end
 
-    return tostring(err)
-end)
+    return true
+end
 
 local function submitKey()
 	if busy then
