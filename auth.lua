@@ -5,7 +5,7 @@ local CoreGui = game:GetService("CoreGui")
 
 local CORRECT_KEY = "Tiki Profas"
 
-local DISCORD_INVITE = "https://discord.gg/2D3atd73y"
+local DISCORD_INVITE = "https://discord.gg/aDJMHmQBb"
 
 local TARGET_URL =
     "https://raw.githubusercontent.com/trustedscript/tiki-script/main/main.lua"
