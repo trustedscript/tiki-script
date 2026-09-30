@@ -1,6 +1,6 @@
 --[[
 =======================================================================
- Crystal Hub — Slayers 2 Auto Game v3 Progression
+ Tiki Hub — Slayers 2 Auto Game v3 Progression
  One file, but UI and gameplay backend compile in isolated Luau chunks.
  This avoids local/register limits from concatenating both huge scripts.
 =======================================================================
@@ -12,18 +12,18 @@ end
 
 local __env = (getgenv and getgenv()) or _G
 
--- Clean a previous Crystal Hub instance first.
-if type(__env.__CrystalHubUnload) == "function" then
-    pcall(__env.__CrystalHubUnload)
+-- Clean a previous Tiki Hub instance first.
+if type(__env.__TikiHubUnload) == "function" then
+    pcall(__env.__TikiHubUnload)
 end
 
-print("[CrystalHub] loader v3: compiling UI shell...")
+print("[TikiHub] loader v3: compiling UI shell...")
 
 local __uiSource = [==============[--[[
 =======================================================================
-  Crystal Hub — Slayers 2 Full Build
-  Backend: supplied Cryptic/Slayers 2 script
-  Interface: Crystal Hub local UI library only (no Obsidian download)
+  Tiki Hub — Slayers 2 Full Build
+  Backend: supplied Tiki HUB/Cryptic/Slayers 2 script
+  Interface: Tiki Hub local UI library only (no Obsidian download)
 
   Tabs:
   Auto Game · Farm · Progress · Boss · Dungeons · Quest · Teleport
@@ -35,11 +35,11 @@ local __uiSource = [==============[--[[
 
 do
 	local runtimeEnvironment = (getgenv and getgenv()) or _G
-	local previousCrystalHubUnload = runtimeEnvironment.__CrystalHubUnload
-	if type(previousCrystalHubUnload) == "function" then
-		pcall(previousCrystalHubUnload)
+	local previousTikiHubUnload = runtimeEnvironment.__TikiHubUnload
+	if type(previousTikiHubUnload) == "function" then
+		pcall(previousTikiHubUnload)
 	end
-	runtimeEnvironment.__CrystalHubUnload = nil
+	runtimeEnvironment.__TikiHubUnload = nil
 end
 
 local Players          = game:GetService("Players")
@@ -272,7 +272,7 @@ local Locales = {
 		["ui.empty"]         = "—",
 		["ui.bindHint"]      = "right click — bind a key",
 
-		["loader.title"]     = "Crystal Hub",
+		["loader.title"]     = "Tiki Hub",
 		["loader.boot"]      = "starting up",
 		["loader.theme"]     = "applying theme",
 		["loader.elements"]  = "building interface",
@@ -910,7 +910,7 @@ local function makeDraggable(window, handle, state)
 	return conns
 end
 
-local CRYSTAL_LOGO_IMAGE = "rbxthumb://type=Asset&id=71152887867495&w=420&h=420"
+local Tiki_LOGO_IMAGE = "rbxthumb://type=Asset&id=71152887867495&w=420&h=420"
 
 local function createLogo(parent, size, position, animated)
 	local holder = new("Frame", {
@@ -923,13 +923,13 @@ local function createLogo(parent, size, position, animated)
 
 	-- One uploaded transparent source keeps the branding identical in the
 	-- loader, full header, minimized header and floating open button.
-	local crystal = new("ImageLabel", {
-		Name = "CrystalMark",
+	local Tiki = new("ImageLabel", {
+		Name = "TikiMark",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
-		Image = CRYSTAL_LOGO_IMAGE,
+		Image = Tiki_LOGO_IMAGE,
 		ScaleType = Enum.ScaleType.Fit,
 		ZIndex = 3,
 		Parent = holder,
@@ -940,7 +940,7 @@ local function createLogo(parent, size, position, animated)
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
-		Image = CRYSTAL_LOGO_IMAGE,
+		Image = Tiki_LOGO_IMAGE,
 		ImageColor3 = Color3.fromRGB(255, 255, 255),
 		ScaleType = Enum.ScaleType.Fit,
 		ZIndex = 4,
@@ -964,7 +964,7 @@ local function createLogo(parent, size, position, animated)
 			TweenService:Create(logoScale,
 				TweenInfo.new(DeviceProfile.LowPower and 2.5 or 1.65, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 				{ Scale = DeviceProfile.LowPower and 1.07 or 1.12 }),
-			TweenService:Create(crystal,
+			TweenService:Create(Tiki,
 				TweenInfo.new(DeviceProfile.LowPower and 3.8 or 2.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 				{ Rotation = 5, ImageColor3 = Color3.fromRGB(194, 226, 255) }),
 			TweenService:Create(sheenGradient,
@@ -1047,7 +1047,7 @@ end
 function Library:Notify(config)
 	config = config or {}
 
-	local title    = config.Title    or "Crystal Hub"
+	local title    = config.Title    or "Tiki Hub"
 	local text     = config.Text     or ""
 	local duration = config.Duration or 4
 	local kind     = config.Kind     or "info"
@@ -1263,7 +1263,7 @@ function Library:ResolveBackgroundAsset()
 	local environment = (getgenv and getgenv()) or _G
 	local loader = environment.getcustomasset or getcustomasset or environment.getsynasset or getsynasset
 	if type(loader) ~= "function" then return nil, "local image loader unavailable" end
-	local ok, asset = pcall(loader, "CrystalHubAssets/anime-background-20030a4e.png")
+	local ok, asset = pcall(loader, "TikiHubAssets/anime-background-20030a4e.png")
 	if not ok then return nil, tostring(asset) end
 	if type(asset) ~= "string" or asset == "" then return nil, "local image loader returned a non-ContentId value" end
 	self._backgroundAsset = asset
@@ -1450,7 +1450,7 @@ function Library:CreateWindow(config)
 		Size = UDim2.new(1, -140, 0, 14),
 		Position = UDim2.new(0, 52, 0, 24),
 		BackgroundTransparency = 1,
-		Text = "Made By Skobliko",
+		Text = "Made By Tiki",
 		TextColor3 = Theme.TextDim,
 		TextSize = 11,
 		Font = Theme.Font,
@@ -1675,7 +1675,7 @@ function Library:CreateWindow(config)
 		-- An executor/service wrapper can return an unexpected value. Never pass
 		-- an Instance (or its tostring name) to the ContentId property.
 		if type(thumbnail) ~= "string" or thumbnail == "" then
-			warn("[CrystalUI][AVATAR] ignored unexpected thumbnail type=" .. typeof(thumbnail))
+			warn("[TikiUI][AVATAR] ignored unexpected thumbnail type=" .. typeof(thumbnail))
 			return
 		end
 		accountAvatar.Image = thumbnail
@@ -1723,7 +1723,7 @@ function Library:CreateWindow(config)
 	-- Wallpaper stays behind every interactive sibling, without consuming input.
 	Window.BackgroundSettings = { Enabled = true, Dim = 0.35 }
 	Window.BackgroundImage = new("ImageLabel", {
-		Name = "CrystalAnimeBackground", Size = UDim2.fromScale(1, 1),
+		Name = "TikiAnimeBackground", Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1, BorderSizePixel = 0,
 		Image = "", ImageTransparency = 0, ImageColor3 = Color3.new(1, 1, 1),
 		ScaleType = Enum.ScaleType.Crop, ZIndex = 0,
@@ -1755,7 +1755,7 @@ function Library:CreateWindow(config)
 			end
 			if err and (reload or not self.BackgroundErrorShown) then
 				self.BackgroundErrorShown = true
-				warn("[CrystalUI][BACKGROUND] " .. err)
+				warn("[TikiUI][BACKGROUND] " .. err)
 			end
 		end
 		self:RefreshBackground()
@@ -1853,7 +1853,7 @@ function Library:CreateWindow(config)
 	end
 	local function runResponsiveLayout(recenter)
 		local ok, err = pcall(applyResponsiveLayout, recenter)
-		if not ok then warn("[CrystalHub] responsive layout error: " .. tostring(err)) end
+		if not ok then warn("[TikiHub] responsive layout error: " .. tostring(err)) end
 		return ok
 	end
 
@@ -3819,13 +3819,13 @@ function Library:CreateWindow(config)
 			end
 		end
 		local environment = (getgenv and getgenv()) or _G
-		local skinConfig = environment.CrystalSavedSkinConfig
-		if type(environment.CrystalSkinChangerGetConfig) == "function" then
-			local ok, current = pcall(environment.CrystalSkinChangerGetConfig)
+		local skinConfig = environment.TikiSavedSkinConfig
+		if type(environment.TikiSkinChangerGetConfig) == "function" then
+			local ok, current = pcall(environment.TikiSkinChangerGetConfig)
 			if ok and type(current) == "table" then skinConfig = current end
 		end
 		if type(skinConfig) == "table" then
-			data.__crystal_skin_changer = serialize(skinConfig)
+			data.__Tiki_skin_changer = serialize(skinConfig)
 		end
 		return data
 	end
@@ -3915,21 +3915,21 @@ function Library:CreateWindow(config)
 			end
 		end
 
-		local storedSkinConfig = data.__crystal_skin_changer and deserialize(data.__crystal_skin_changer) or nil
+		local storedSkinConfig = data.__Tiki_skin_changer and deserialize(data.__Tiki_skin_changer) or nil
 		if type(storedSkinConfig) == "table" then
 			local environment = (getgenv and getgenv()) or _G
-			environment.CrystalSavedSkinConfig = storedSkinConfig
-			if type(environment.CrystalSkinChangerApplyConfig) == "function" then
-				task.defer(environment.CrystalSkinChangerApplyConfig, storedSkinConfig)
+			environment.TikiSavedSkinConfig = storedSkinConfig
+			if type(environment.TikiSkinChangerApplyConfig) == "function" then
+				task.defer(environment.TikiSkinChangerApplyConfig, storedSkinConfig)
 			elseif Library.SkinSpawner and type(Library.SkinSpawner.Open) == "function" then
 				-- Initialize the cosmetic engine without flashing its catalogue window.
 				task.spawn(function()
-					environment.CrystalSkinChangerStartHidden = true
-					-- Open's initializer consumes CrystalSavedSkinConfig once.
+					environment.TikiSkinChangerStartHidden = true
+					-- Open's initializer consumes TikiSavedSkinConfig once.
 					-- Applying it again here raced the deferred bootstrap and equipped twice.
 					local opened, openError = pcall(Library.SkinSpawner.Open)
-					if not opened then warn("[CrystalSkin][CONFIG_OPEN_ERROR] " .. tostring(openError)) end
-					environment.CrystalSkinChangerStartHidden = nil
+					if not opened then warn("[TikiSkin][CONFIG_OPEN_ERROR] " .. tostring(openError)) end
+					environment.TikiSkinChangerStartHidden = nil
 				end)
 			end
 		end
@@ -4031,9 +4031,9 @@ function Library:SetTheme(name)
 		Library.CurrentTheme = name
 	end
 	local sharedEnvironment = (getgenv and getgenv()) or _G
-	sharedEnvironment.CrystalHubTheme = Theme
-	if type(sharedEnvironment.CrystalSpawnerApplyTheme) == "function" then
-		pcall(sharedEnvironment.CrystalSpawnerApplyTheme)
+	sharedEnvironment.TikiHubTheme = Theme
+	if type(sharedEnvironment.TikiSpawnerApplyTheme) == "function" then
+		pcall(sharedEnvironment.TikiSpawnerApplyTheme)
 	end
 	return true
 end
@@ -4306,7 +4306,7 @@ function Library:CreateLoader(config)
 				statusLabel.Text = "Startup failed: " .. string.sub(message, 1, 120)
 				statusLabel.TextColor3 = Color3.fromRGB(255, 120, 120)
 				percentLabel.Text = "ERROR"
-				warn("[CrystalHub] interface startup failed: " .. message)
+				warn("[TikiHub] interface startup failed: " .. message)
 				return false
 			end
 		end
@@ -4539,8 +4539,8 @@ function Library:CreateFloatingButton(config)
 end
 
 
--- Crystal Hub generic standalone cleanup for the compatibility shell.
-local function CrystalUIUnload()
+-- Tiki Hub generic standalone cleanup for the compatibility shell.
+local function TikiUIUnload()
 	if Library._compatUnloading then return end
 	Library._compatUnloading = true
 
@@ -4566,7 +4566,7 @@ local function CrystalUIUnload()
 end
 
 
-local CrystalCompat = {
+local TikiCompat = {
 	Unloaded = false,
 	Options = {},
 	Toggles = {},
@@ -4581,7 +4581,7 @@ local function compatSafe(fn, ...)
 	local args = table.pack(...)
 	task.spawn(function()
 		local ok, err = pcall(fn, table.unpack(args, 1, args.n))
-		if not ok then warn("[CrystalHub UI callback] " .. tostring(err)) end
+		if not ok then warn("[TikiHub UI callback] " .. tostring(err)) end
 	end)
 end
 
@@ -4613,49 +4613,49 @@ local function listToMap(list)
 	return map
 end
 
-function CrystalCompat:Notify(config)
+function TikiCompat:Notify(config)
 	config = config or {}
 	return Library:Notify({
-		Title = config.Title or "Crystal Hub",
+		Title = config.Title or "Tiki Hub",
 		Text = config.Description or config.Text or "",
 		Duration = config.Time or config.Duration or 4,
 		Kind = config.Kind or "info",
 	})
 end
 
-function CrystalCompat:OnUnload(fn)
+function TikiCompat:OnUnload(fn)
 	if type(fn) == "function" then table.insert(self._unloadCallbacks, fn) end
 end
 
-function CrystalCompat:Unload()
+function TikiCompat:Unload()
 	if self.Unloaded then return end
 	self.Unloaded = true
 
 	for _, fn in ipairs(self._unloadCallbacks) do pcall(fn) end
 	self._unloadCallbacks = {}
 
-	CrystalUIUnload()
+	TikiUIUnload()
 
 	local env = (getgenv and getgenv()) or _G
-	if env.__CrystalHubUnload == self._runtimeUnloadHandle then
-		env.__CrystalHubUnload = nil
+	if env.__TikiHubUnload == self._runtimeUnloadHandle then
+		env.__TikiHubUnload = nil
 	end
 end
 
-CrystalCompat._runtimeUnloadHandle = function()
-	pcall(function() CrystalCompat:Unload() end)
+TikiCompat._runtimeUnloadHandle = function()
+	pcall(function() TikiCompat:Unload() end)
 end
-((getgenv and getgenv()) or _G).__CrystalHubUnload = CrystalCompat._runtimeUnloadHandle
+((getgenv and getgenv()) or _G).__TikiHubUnload = TikiCompat._runtimeUnloadHandle
 
-function CrystalCompat:CreateWindow(_config)
+function TikiCompat:CreateWindow(_config)
 	self.Unloaded = false
 
 	local baseWindow = Library:CreateWindow({
-		Title = "Crystal Hub",
-		Subtitle = "Slayers 2  ·  made by skobliko  ·  Right Ctrl to hide",
+		Title = "Tiki Hub",
+		Subtitle = "Slayers 2  ·  made by Tiki  ·  Right Ctrl to hide",
 		Size = UDim2.fromOffset(820, 610),
 		Keybind = Enum.KeyCode.RightControl,
-		ConfigDir = "CrystalHub/Slayers2",
+		ConfigDir = "TikiHub/Slayers2",
 		ClampToScreen = true,
 	})
 
@@ -4663,10 +4663,10 @@ function CrystalCompat:CreateWindow(_config)
 
 	if baseWindow.Gui then
 		baseWindow.Gui.Destroying:Connect(function()
-			if not CrystalCompat.Unloaded then
+			if not TikiCompat.Unloaded then
 				task.defer(function()
-					if not CrystalCompat.Unloaded then
-						CrystalCompat:Unload()
+					if not TikiCompat.Unloaded then
+						TikiCompat:Unload()
 					end
 				end)
 			end
@@ -4735,7 +4735,7 @@ function CrystalCompat:CreateWindow(_config)
 					base:Set(self.Value)
 				end
 				function obj:Set(value) self:SetValue(value) end
-				CrystalCompat.Toggles[id] = obj
+				TikiCompat.Toggles[id] = obj
 				return obj
 			end
 
@@ -4758,7 +4758,7 @@ function CrystalCompat:CreateWindow(_config)
 					base:Set(self.Value)
 				end
 				function obj:Set(value) self:SetValue(value) end
-				CrystalCompat.Options[id] = obj
+				TikiCompat.Options[id] = obj
 				return obj
 			end
 
@@ -4802,7 +4802,7 @@ function CrystalCompat:CreateWindow(_config)
 					end
 					function obj:SetOptions(newValues) self:SetValues(newValues) end
 
-					CrystalCompat.Options[id] = obj
+					TikiCompat.Options[id] = obj
 					return obj
 				end
 
@@ -4832,7 +4832,7 @@ function CrystalCompat:CreateWindow(_config)
 				end
 				function obj:SetOptions(newValues) self:SetValues(newValues) end
 
-				CrystalCompat.Options[id] = obj
+				TikiCompat.Options[id] = obj
 				return obj
 			end
 
@@ -4847,32 +4847,32 @@ end
 
 
 
-return CrystalCompat
+return TikiCompat
 ]==============]
 local __uiChunk, __uiCompileError = loadstring(__uiSource)
 if not __uiChunk then
-    error("[CrystalHub] UI COMPILE ERROR: " .. tostring(__uiCompileError))
+    error("[TikiHub] UI COMPILE ERROR: " .. tostring(__uiCompileError))
 end
 
 local __uiOk, __compatOrError = pcall(__uiChunk)
 if not __uiOk then
-    error("[CrystalHub] UI RUNTIME ERROR: " .. tostring(__compatOrError))
+    error("[TikiHub] UI RUNTIME ERROR: " .. tostring(__compatOrError))
 end
 
 if type(__compatOrError) ~= "table" then
-    error("[CrystalHub] UI shell returned " .. typeof(__compatOrError) .. ", expected table")
+    error("[TikiHub] UI shell returned " .. typeof(__compatOrError) .. ", expected table")
 end
 
-__env.__CrystalHubSlayers2Compat = __compatOrError
-print("[CrystalHub] loader v3: UI shell ready")
-print("[CrystalHub] loader v3: compiling Slayers 2 backend...")
+__env.__TikiHubSlayers2Compat = __compatOrError
+print("[TikiHub] loader v3: UI shell ready")
+print("[TikiHub] loader v3: compiling Slayers 2 backend...")
 
-local __backendSource = [==================[local __crystalEnv = (getgenv and getgenv()) or _G
-local CrystalCompat = __crystalEnv.__CrystalHubSlayers2Compat
-if type(CrystalCompat) ~= "table" then
-    error("[CrystalHub] compatibility UI adapter missing")
+local __backendSource = [==================[local __TikiEnv = (getgenv and getgenv()) or _G
+local TikiCompat = __TikiEnv.__TikiHubSlayers2Compat
+if type(TikiCompat) ~= "table" then
+    error("[TikiHub] compatibility UI adapter missing")
 end
-print("[CrystalHub] Slayers 2 backend starting...")
+print("[TikiHub] Slayers 2 backend starting...")
 
 if not game:IsLoaded() then
     game.Loaded:Wait()
@@ -9574,7 +9574,7 @@ local function v109(v697)
             return
         end
         local v2024 = v26(v2021.Name)
-        if string.find(v2024, "spawncrystal", 896 - (318 + 577), true) then
+        if string.find(v2024, "spawnTiki", 896 - (318 + 577), true) then
             v2023 = v2023 + (562 - 432)
         end
         if string.find(v2024, "spawn", 1, true) then
@@ -9681,7 +9681,7 @@ local function v111(v706)
             if not v706 then
                 return nil
             end
-            v708 = v706:FindFirstChild("SpawnCrystal", true)
+            v708 = v706:FindFirstChild("SpawnTiki", true)
             v707 = 3 - 2
         end
         if v707 == 1 then
@@ -9975,7 +9975,7 @@ local function v114(v721)
         end
     end
     if #v722 == (0 - 0) then
-        return false, "Region/SpawnCrystal not streamed: " .. tostring(v724)
+        return false, "Region/SpawnTiki not streamed: " .. tostring(v724)
     end
     return false, "No usable teleport anchor for " .. tostring(((v724 ~= "") and v724) or "region")
 end
@@ -22935,16 +22935,16 @@ v19.Runtime.infoLabel = function(v1670, v1671)
 end
 v19.Runtime.loadObsidian = function()
     local previous = v18.CRYPTIC_SLAYERS_2_LIBRARY
-    if previous and previous ~= CrystalCompat then
+    if previous and previous ~= TikiCompat then
         pcall(function()
             if type(previous.Unload) == "function" then previous:Unload() end
         end)
     end
 
-    CrystalCompat.Unloaded = false
-    CrystalCompat.Options = {}
-    CrystalCompat.Toggles = {}
-    return CrystalCompat
+    TikiCompat.Unloaded = false
+    TikiCompat.Options = {}
+    TikiCompat.Toggles = {}
+    return TikiCompat
 end
 v19.Runtime.destroyAll = function()
     if v19.Destroyed then
@@ -29101,15 +29101,15 @@ v365()
 ]==================]
 local __backendChunk, __backendCompileError = loadstring(__backendSource)
 if not __backendChunk then
-    __env.__CrystalHubSlayers2Compat = nil
-    error("[CrystalHub] BACKEND COMPILE ERROR: " .. tostring(__backendCompileError))
+    __env.__TikiHubSlayers2Compat = nil
+    error("[TikiHub] BACKEND COMPILE ERROR: " .. tostring(__backendCompileError))
 end
 
 local __backendOk, __backendRuntimeError = pcall(__backendChunk)
 if not __backendOk then
-    warn("[CrystalHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
-    __env.__CrystalHubLastError = tostring(__backendRuntimeError)
-    error("[CrystalHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
+    warn("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
+    __env.__TikiHubLastError = tostring(__backendRuntimeError)
+    error("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
 end
 
-print("[CrystalHub] loader v3: backend loaded successfully")
+print("[TikiHub] loader v3: backend loaded successfully")
