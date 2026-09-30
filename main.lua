@@ -4523,6 +4523,264 @@ local function TikiUIUnload()
 	Library._compatUnloading = false
 end
 
+-- ─────────────────────────────────────────────────────────────
+-- Theme butterflies: animated wings that follow the current theme
+-- ─────────────────────────────────────────────────────────────
+
+Library.ButterflySettings = {
+    Enabled = true,
+    Count = 12,
+    Theme = "Crimson",
+}
+
+Library.ButterflyPalette = {
+    Golden   = { Color3.fromRGB(255, 200, 80),  Color3.fromRGB(255, 235, 155) },
+    Midnight = { Color3.fromRGB(145, 104, 255), Color3.fromRGB(67, 216, 255) },
+    Obsidian = { Color3.fromRGB(240, 240, 245), Color3.fromRGB(170, 170, 180) },
+    Violet   = { Color3.fromRGB(186, 110, 255), Color3.fromRGB(255, 130, 220) },
+    Emerald  = { Color3.fromRGB(72, 230, 160),  Color3.fromRGB(150, 255, 190) },
+    Crimson  = { Color3.fromRGB(255, 88, 110),  Color3.fromRGB(255, 160, 120) },
+    Ocean    = { Color3.fromRGB(70, 190, 255),  Color3.fromRGB(120, 255, 240) },
+    Daylight = { Color3.fromRGB(88, 104, 255),  Color3.fromRGB(120, 190, 255) },
+}
+
+local __bflyHosts = {}
+
+local function __bflyBuild(parent, palette)
+    local holder = new("Frame", {
+        Name = "Butterfly",
+        Size = UDim2.fromOffset(28, 22),
+        BackgroundTransparency = 1,
+        Active = false,
+        Selectable = false,
+        ZIndex = 2,
+        Parent = parent,
+    })
+
+    local left = new("Frame", {
+        Size = UDim2.fromOffset(12, 16),
+        Position = UDim2.fromOffset(12, 11),
+        AnchorPoint = Vector2.new(1, 0.5),
+        BackgroundColor3 = palette[1],
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0,
+        Active = false,
+        Selectable = false,
+        ZIndex = 2,
+        Parent = holder,
+    })
+    corner(left, 6)
+    new("UIGradient", {
+        Rotation = 45,
+        Color = ColorSequence.new(palette[1], palette[2]),
+        Parent = left,
+    })
+
+    local right = new("Frame", {
+        Size = UDim2.fromOffset(12, 16),
+        Position = UDim2.fromOffset(16, 11),
+        AnchorPoint = Vector2.new(0, 0.5),
+        BackgroundColor3 = palette[2],
+        BackgroundTransparency = 0.1,
+        BorderSizePixel = 0,
+        Active = false,
+        Selectable = false,
+        ZIndex = 2,
+        Parent = holder,
+    })
+    corner(right, 6)
+    new("UIGradient", {
+        Rotation = -45,
+        Color = ColorSequence.new(palette[2], palette[1]),
+        Parent = right,
+    })
+
+    local body = new("Frame", {
+        Size = UDim2.fromOffset(2, 10),
+        Position = UDim2.fromOffset(13, 6),
+        BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+        BackgroundTransparency = 0.3,
+        BorderSizePixel = 0,
+        Active = false,
+        Selectable = false,
+        ZIndex = 3,
+        Parent = holder,
+    })
+    corner(body, 1)
+
+    return holder, left, right
+end
+
+local function __bflyStart(windowGui, parent)
+    if __bflyHosts[windowGui] then
+        return __bflyHosts[windowGui]
+    end
+
+    local state = {
+        Gui = windowGui,
+        Parent = parent,
+        Active = Library.ButterflySettings.Enabled,
+        Butts = {},
+    }
+    __bflyHosts[windowGui] = state
+
+    if not state.Active then
+        return state
+    end
+
+    local cam = workspace.CurrentCamera
+    local vp = cam and cam.ViewportSize or Vector2.new(1280, 720)
+    local palette = Library.ButterflyPalette[Library.ButterflySettings.Theme]
+        or Library.ButterflyPalette.Crimson
+
+    for _ = 1, Library.ButterflySettings.Count do
+        local holder, lw, rw = __bflyBuild(parent, palette)
+        local startX = math.random(40, math.max(60, math.floor(vp.X) - 60))
+        local startY = math.random(40, math.max(60, math.floor(vp.Y) - 60))
+        local angle = math.random() * math.pi * 2
+        local speed = math.random(24, 62)
+        local scale = 0.55 + math.random() * 0.65
+
+        new("UIScale", { Scale = scale, Parent = holder })
+        holder.Position = UDim2.fromOffset(startX, startY)
+        holder.Rotation = math.deg(angle)
+
+        table.insert(state.Butts, {
+            Holder = holder,
+            Left = lw,
+            Right = rw,
+            Angle = angle,
+            Speed = speed,
+            Wobble = math.random() * math.pi * 2,
+            Phase = math.random() * math.pi * 2,
+        })
+    end
+
+    task.spawn(function()
+        local last = os.clock()
+        while state.Active and state.Gui and state.Gui.Parent do
+            local now = os.clock()
+            local dt = now - last
+            last = now
+            local c = workspace.CurrentCamera
+            local v2 = c and c.ViewportSize or vp
+
+            for _, b in ipairs(state.Butts) do
+                if not b.Holder.Parent then break end
+
+                b.Phase = b.Phase + dt * 2.4
+                b.Wobble = b.Wobble + dt * 1.7
+                b.Angle = b.Angle + math.sin(b.Wobble) * dt * 1.8
+
+                local x = b.Holder.Position.X.Offset + math.cos(b.Angle) * b.Speed * dt
+                local y = b.Holder.Position.Y.Offset + math.sin(b.Angle) * b.Speed * dt
+
+                if x < -40 then x = v2.X + 30 elseif x > v2.X + 40 then x = -30 end
+                if y < -40 then y = v2.Y + 30 elseif y > v2.Y + 40 then y = -30 end
+
+                b.Holder.Position = UDim2.fromOffset(math.floor(x), math.floor(y))
+                b.Holder.Rotation = math.deg(b.Angle) + math.sin(b.Phase) * 8
+
+                local flap = 0.5 + math.sin(b.Phase * 4) * 0.5
+                b.Left.Size = UDim2.fromOffset(math.floor(5 + 11 * flap), 16)
+                b.Right.Size = UDim2.fromOffset(math.floor(5 + 11 * flap), 16)
+            end
+
+            task.wait(1 / 45)
+        end
+    end)
+
+    return state
+end
+
+local function __bflyClear(windowGui)
+    local state = __bflyHosts[windowGui]
+    if not state then
+        return
+    end
+    state.Active = false
+    for _, b in ipairs(state.Butts) do
+        pcall(function() b.Holder:Destroy() end)
+    end
+    state.Butts = {}
+    __bflyHosts[windowGui] = nil
+end
+
+local function __bflyRefresh(windowGui, parent)
+    __bflyClear(windowGui)
+    if Library.ButterflySettings.Enabled then
+        __bflyStart(windowGui, parent)
+    end
+end
+
+function Library:SetButterflies(enabled, themeName)
+    if enabled ~= nil then
+        Library.ButterflySettings.Enabled = enabled == true
+    end
+    if themeName and Library.ButterflyPalette[themeName] then
+        Library.ButterflySettings.Theme = themeName
+    end
+    for _, window in ipairs(Library.Windows) do
+        if window.Gui and window.Main then
+            __bflyRefresh(window.Gui, window.Main)
+        end
+    end
+end
+
+function Library:GetButterflySettings()
+    return Library.ButterflySettings
+end
+
+function Library:SetButterflyCount(n)
+    n = tonumber(n)
+    if not n then
+        return
+    end
+    Library.ButterflySettings.Count = math.clamp(math.floor(n), 1, 40)
+    for _, window in ipairs(Library.Windows) do
+        if window.Gui and window.Main then
+            __bflyRefresh(window.Gui, window.Main)
+        end
+    end
+end
+
+-- Auto-attach butterflies to every window created from now on.
+local __origCreateWindow = Library.CreateWindow
+function Library:CreateWindow(config)
+    local window = __origCreateWindow(self, config)
+    if window and window.Gui and window.Main then
+        task.defer(function()
+            __bflyStart(window.Gui, window.Main)
+        end)
+    end
+    return window
+end
+
+function TikiCompat:SetTheme(name)
+    Library:SetTheme(name)
+    Library:SetButterflies(nil, name)
+end
+
+function TikiCompat:GetThemes()
+    return Library:GetThemes()
+end
+
+function TikiCompat:GetCurrentTheme()
+    return Library.CurrentTheme
+end
+
+function TikiCompat:SetButterflies(enabled)
+    Library:SetButterflies(enabled)
+end
+
+function TikiCompat:SetButterflyCount(n)
+    Library:SetButterflyCount(n)
+end
+
+function TikiCompat:ButterfliesEnabled()
+    return Library.ButterflySettings.Enabled == true
+end
+
 
 local TikiCompat = {
 	Unloaded = false,
@@ -28876,6 +29134,83 @@ local function v365()
     v349(v1871:AddTab("Loot", "package-open"))
     v350(v1871:AddTab("Activities", "fish"))
     v348(v1871:AddTab("Misc", "settings"))
+	local function v366(themeTab)
+    local themeGroup = themeTab:AddGroupbox({
+        ["Side"] = "Left",
+        ["Name"] = "Theme",
+        ["IconName"] = "sparkles",
+    })
+
+    local themeNames = (v19.Library.GetThemes and v19.Library:GetThemes()) or {
+        "Golden", "Midnight", "Obsidian", "Violet",
+        "Emerald", "Crimson", "Ocean", "Daylight",
+    }
+
+    local currentTheme = (v19.Library.GetCurrentTheme and v19.Library:GetCurrentTheme()) or "Golden"
+
+    themeGroup:AddDropdown("ThemeSelect", {
+        ["Text"] = "Theme preset",
+        ["Values"] = themeNames,
+        ["Default"] = currentTheme,
+        ["Multi"] = false,
+        ["Searchable"] = true,
+        ["Callback"] = function(choice)
+            if not choice or choice == "" then return end
+            if v19.Library.SetTheme then
+                v19.Library:SetTheme(choice)
+            end
+            v24("Theme: " .. tostring(choice))
+        end,
+    })
+
+    local themeInfo = v19.Runtime.infoLabel(
+        themeGroup,
+        "Active theme: " .. tostring(currentTheme)
+    )
+
+    v19.Runtime.liveLoop(1.5, function()
+        local cur = v19.Library.GetCurrentTheme
+            and v19.Library:GetCurrentTheme() or "?"
+        v19.Runtime.setText(themeInfo, "Active theme: " .. tostring(cur))
+    end)
+
+    local bflyGroup = themeTab:AddGroupbox({
+        ["Side"] = "Right",
+        ["Name"] = "Butterflies",
+        ["IconName"] = "sparkles",
+    })
+
+    v19.Runtime.toggle(bflyGroup, "ButterfliesEnabled", {
+        ["Text"] = "Floating butterflies",
+        ["Default"] = (v19.Library.ButterfliesEnabled and v19.Library:ButterfliesEnabled()) or false,
+        ["Callback"] = function(state)
+            if v19.Library.SetButterflies then
+                v19.Library:SetButterflies(state == true)
+            end
+            v24((state and "Butterflies on") or "Butterflies off")
+        end,
+    })
+
+    v19.Runtime.obsidianInput(bflyGroup, "ButterflyCount", {
+        ["Text"] = "Butterfly count",
+        ["Default"] = (v19.Library.ButterflySettings and v19.Library.ButterflySettings.Count) or 12,
+        ["Numeric"] = true,
+        ["Placeholder"] = "1 - 40",
+        ["Callback"] = function(value)
+            local n = tonumber(value)
+            if n and v19.Library.SetButterflyCount then
+                v19.Library:SetButterflyCount(n)
+            end
+        end,
+    })
+
+    v19.Runtime.infoLabel(
+        bflyGroup,
+        "Wings recolour automatically to match the active theme palette."
+    )
+end
+
+v366(v1871:AddTab("Theme", "sparkles"))
     v364(v1871:AddTab("Server", "server"))
     v21(v11.JumpRequest:Connect(function()
         if v19.Flags.InfiniteJump then
