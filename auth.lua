@@ -3,7 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 
 
-local CORRECT_KEY = "Tiki Profas"
+local CORRECT_KEY = "test"
 
 local DISCORD_INVITE = "https://discord.gg/UPxPuNAkq"
 
