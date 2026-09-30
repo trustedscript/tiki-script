@@ -33,14 +33,6 @@ local __uiSource = [==============[--[[
 =======================================================================
 ]]
 
-do
-	local runtimeEnvironment = (getgenv and getgenv()) or _G
-	local previousTikiHubUnload = runtimeEnvironment.__TikiHubUnload
-	if type(previousTikiHubUnload) == "function" then
-		pcall(previousTikiHubUnload)
-	end
-	runtimeEnvironment.__TikiHubUnload = nil
-end
 
 local Players          = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -2031,15 +2023,25 @@ local screenGui = new("ScreenGui", {
 		end)
 	end)
 
-track(UserInputService.InputBegan:Connect(function(input)
+track(UserInputService.InputBegan:Connect(function(input, processed)
     if input.UserInputType ~= Enum.UserInputType.Keyboard then
         return
     end
 
-    if input.KeyCode == keybind then
-        screenGui.Enabled = not screenGui.Enabled
-        print("[TikiHub] RightControl pressed. UI enabled:", screenGui.Enabled)
+    if input.KeyCode ~= keybind then
+        return
     end
+
+    screenGui.Enabled = not screenGui.Enabled
+
+    print(
+        "[TikiHub] keybind pressed:",
+        input.KeyCode.Name,
+        "processed:",
+        processed,
+        "enabled:",
+        screenGui.Enabled
+    )
 end))
 
 function Window:Toggle()
@@ -4675,9 +4677,12 @@ end
 ((getgenv and getgenv()) or _G).__TikiHubUnload = TikiCompat._runtimeUnloadHandle
 
 function TikiCompat:CreateWindow(_config)
-	self.Unloaded = false
+    self.Unloaded = false
 
-	local baseWindow = Library:CreateWindow({
+    print("[TikiHub] TikiCompat:CreateWindow called")
+    print("[TikiHub] Library.CreateWindow:", Library.CreateWindow)
+
+    local baseWindow = Library:CreateWindow({
 		Title = "Tiki Hub",
 		Subtitle = "Slayers 2  ·  made by Tiki  ·  Right Ctrl to hide",
 		Size = UDim2.fromOffset(820, 610),
@@ -4686,7 +4691,14 @@ function TikiCompat:CreateWindow(_config)
 		ClampToScreen = true,
 	})
 
-	self.Window = baseWindow
+	    if not baseWindow then
+        error("[TikiHub] Library:CreateWindow returned nil")
+    end
+
+    self.Window = baseWindow
+
+    print("[TikiHub] base window created:", baseWindow)
+    print("[TikiHub] base GUI:", baseWindow.Gui)
 	print("[TikiHub] CreateWindow completed")
 print("[TikiHub] GUI:", baseWindow.Gui)
 print("[TikiHub] GUI parent:", baseWindow.Gui and baseWindow.Gui.Parent)
@@ -4901,11 +4913,18 @@ if not __uiOk then
 end
 
 if type(__compatOrError) ~= "table" then
-    error("[TikiHub] UI shell returned " .. typeof(__compatOrError) .. ", expected table")
+    error(
+        "[TikiHub] UI shell returned "
+        .. tostring(type(__compatOrError))
+        .. ", expected table"
+    )
 end
 
 __env.__TikiHubSlayers2Compat = __compatOrError
+
 print("[TikiHub] loader v3: UI shell ready")
+print("[TikiHub] compatibility adapter:", __compatOrError)
+print("[TikiHub] CreateWindow function:", __compatOrError.CreateWindow)
 print("[TikiHub] loader v3: compiling Slayers 2 backend...")
 
 local __backendSource = [==================[local __TikiEnv = (getgenv and getgenv()) or _G
@@ -29141,6 +29160,7 @@ end
 v365()
 ]==================]
 local __backendChunk, __backendCompileError = loadstring(__backendSource)
+
 if not __backendChunk then
     __env.__TikiHubSlayers2Compat = nil
     error("[TikiHub] BACKEND COMPILE ERROR: " .. tostring(__backendCompileError))
@@ -29156,11 +29176,6 @@ end)
 
 if not __backendOk then
     error("[TikiHub] BACKEND RUNTIME ERROR:\n" .. tostring(__backendError))
-end
-
-if not ok then
-    error("[TikiHub] Backend error: " .. tostring(result))
-end
 end
 
 print("[TikiHub] loader v3: backend loaded successfully")
