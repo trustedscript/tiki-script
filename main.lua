@@ -22,7 +22,7 @@ print("[TikiHub] loader v3: compiling UI shell...")
 local __uiSource = [==============[--[[
 =======================================================================
   Tiki Hub — Slayers 2 Full Build
-  Backend: supplied Tiki HUB/Cryptic/Slayers 2 script
+  Backend: supplied Cryptic/Slayers 2 script
   Interface: Tiki Hub local UI library only (no Obsidian download)
 
   Tabs:
@@ -910,7 +910,7 @@ local function makeDraggable(window, handle, state)
 	return conns
 end
 
-local Tiki_LOGO_IMAGE = "rbxthumb://type=Asset&id=71152887867495&w=420&h=420"
+local TIKI_LOGO_IMAGE = "rbxthumb://type=Asset&id=71152887867495&w=420&h=420"
 
 local function createLogo(parent, size, position, animated)
 	local holder = new("Frame", {
@@ -923,13 +923,13 @@ local function createLogo(parent, size, position, animated)
 
 	-- One uploaded transparent source keeps the branding identical in the
 	-- loader, full header, minimized header and floating open button.
-	local Tiki = new("ImageLabel", {
+	local tiki = new("ImageLabel", {
 		Name = "TikiMark",
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
-		Image = Tiki_LOGO_IMAGE,
+		Image = TIKI_LOGO_IMAGE,
 		ScaleType = Enum.ScaleType.Fit,
 		ZIndex = 3,
 		Parent = holder,
@@ -940,7 +940,7 @@ local function createLogo(parent, size, position, animated)
 		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(1, 1),
 		BackgroundTransparency = 1,
-		Image = Tiki_LOGO_IMAGE,
+		Image = TIKI_LOGO_IMAGE,
 		ImageColor3 = Color3.fromRGB(255, 255, 255),
 		ScaleType = Enum.ScaleType.Fit,
 		ZIndex = 4,
@@ -964,7 +964,7 @@ local function createLogo(parent, size, position, animated)
 			TweenService:Create(logoScale,
 				TweenInfo.new(DeviceProfile.LowPower and 2.5 or 1.65, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 				{ Scale = DeviceProfile.LowPower and 1.07 or 1.12 }),
-			TweenService:Create(Tiki,
+			TweenService:Create(tiki,
 				TweenInfo.new(DeviceProfile.LowPower and 3.8 or 2.4, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
 				{ Rotation = 5, ImageColor3 = Color3.fromRGB(194, 226, 255) }),
 			TweenService:Create(sheenGradient,
@@ -1450,7 +1450,7 @@ function Library:CreateWindow(config)
 		Size = UDim2.new(1, -140, 0, 14),
 		Position = UDim2.new(0, 52, 0, 24),
 		BackgroundTransparency = 1,
-		Text = "Made By Tiki",
+		Text = "Made By Skobliko",
 		TextColor3 = Theme.TextDim,
 		TextSize = 11,
 		Font = Theme.Font,
@@ -3825,7 +3825,7 @@ function Library:CreateWindow(config)
 			if ok and type(current) == "table" then skinConfig = current end
 		end
 		if type(skinConfig) == "table" then
-			data.__Tiki_skin_changer = serialize(skinConfig)
+			data.__tiki_skin_changer = serialize(skinConfig)
 		end
 		return data
 	end
@@ -3915,7 +3915,7 @@ function Library:CreateWindow(config)
 			end
 		end
 
-		local storedSkinConfig = data.__Tiki_skin_changer and deserialize(data.__Tiki_skin_changer) or nil
+		local storedSkinConfig = data.__tiki_skin_changer and deserialize(data.__tiki_skin_changer) or nil
 		if type(storedSkinConfig) == "table" then
 			local environment = (getgenv and getgenv()) or _G
 			environment.TikiSavedSkinConfig = storedSkinConfig
@@ -4652,7 +4652,7 @@ function TikiCompat:CreateWindow(_config)
 
 	local baseWindow = Library:CreateWindow({
 		Title = "Tiki Hub",
-		Subtitle = "Slayers 2  ·  made by Tiki  ·  Right Ctrl to hide",
+		Subtitle = "Slayers 2  ·  made by skobliko  ·  Right Ctrl to hide",
 		Size = UDim2.fromOffset(820, 610),
 		Keybind = Enum.KeyCode.RightControl,
 		ConfigDir = "TikiHub/Slayers2",
@@ -4802,7 +4802,7 @@ function TikiCompat:CreateWindow(_config)
 					end
 					function obj:SetOptions(newValues) self:SetValues(newValues) end
 
-					TikiCompat.Options[id] = obj
+					CrystalCompat.Options[id] = obj
 					return obj
 				end
 
@@ -4867,7 +4867,7 @@ __env.__TikiHubSlayers2Compat = __compatOrError
 print("[TikiHub] loader v3: UI shell ready")
 print("[TikiHub] loader v3: compiling Slayers 2 backend...")
 
-local __backendSource = [==================[local __TikiEnv = (getgenv and getgenv()) or _G
+local __backendSource = [==================[local __tikiEnv = (getgenv and getgenv()) or _G
 local TikiCompat = __TikiEnv.__TikiHubSlayers2Compat
 if type(TikiCompat) ~= "table" then
     error("[TikiHub] compatibility UI adapter missing")
@@ -9574,7 +9574,7 @@ local function v109(v697)
             return
         end
         local v2024 = v26(v2021.Name)
-        if string.find(v2024, "spawnTiki", 896 - (318 + 577), true) then
+        if string.find(v2024, "spawncrystal", 896 - (318 + 577), true) then
             v2023 = v2023 + (562 - 432)
         end
         if string.find(v2024, "spawn", 1, true) then
@@ -9681,7 +9681,7 @@ local function v111(v706)
             if not v706 then
                 return nil
             end
-            v708 = v706:FindFirstChild("SpawnTiki", true)
+            v708 = v706:FindFirstChild("SpawnCrystal", true)
             v707 = 3 - 2
         end
         if v707 == 1 then
@@ -9975,7 +9975,7 @@ local function v114(v721)
         end
     end
     if #v722 == (0 - 0) then
-        return false, "Region/SpawnTiki not streamed: " .. tostring(v724)
+        return false, "Region/SpawnCrystal not streamed: " .. tostring(v724)
     end
     return false, "No usable teleport anchor for " .. tostring(((v724 ~= "") and v724) or "region")
 end
@@ -29108,7 +29108,7 @@ end
 local __backendOk, __backendRuntimeError = pcall(__backendChunk)
 if not __backendOk then
     warn("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
-    __env.__TikiHubLastError = tostring(__backendRuntimeError)
+    __env.__CrystalHubLastError = tostring(__backendRuntimeError)
     error("[TikiHub] BACKEND RUNTIME ERROR: " .. tostring(__backendRuntimeError))
 end
 
