@@ -7,11 +7,10 @@ local CORRECT_KEY = "Tiki Profas"
 
 local DISCORD_INVITE = "https://discord.gg/2D3atd73y"
 
-local ENV = getgenv and getgenv() or _G
+local TARGET_URL =
+    "https://raw.githubusercontent.com/trustedscript/tiki-script/main/main.lua"
 
-
-local TARGET_URL = ENV.TIKI_TARGET_URL
-local SCRIPT_NAME = ENV.TIKI_SCRIPT_NAME or "Tiki Hub"
+local SCRIPT_NAME = "Tiki Hub"
 
 local function trim(text)
 	return tostring(text or "")
@@ -87,14 +86,6 @@ topBar.Parent = main
 local topCorner = Instance.new("UICorner")
 topCorner.CornerRadius = UDim.new(0, 9)
 topCorner.Parent = topBar
-
-local topMask = Instance.new("Frame")
-topMask.AnchorPoint = Vector2.new(0, 1)
-topMask.Position = UDim2.new(0, 0, 1, 0)
-topMask.Size = UDim2.new(1, 0, 0, 10)
-topMask.BackgroundColor3 = topBar.BackgroundColor3
-topMask.BorderSizePixel = 0
-topMask.Parent = topBar
 
 local accent = Instance.new("Frame")
 accent.Position = UDim2.fromOffset(0, 51)
@@ -322,19 +313,50 @@ end)
 
 local busy = false
 
-local function loadTarget()
-	if type(TARGET_URL) ~= "string" or TARGET_URL == "" then
-		error("TIKI_TARGET_URL is not configured")
-	end
+local function loadTarget(url)
+    url = trim(url)
 
-	local source = game:HttpGet(TARGET_URL)
-	local chunk, compileError = loadstring(source)
+if url == "" then
+        return false, "Target URL is empty."
+    end
 
-	if not chunk then
-		error(compileError or "Failed to compile target script")
-	end
+   if type(game.HttpGet) ~= "function" then
+    return false, "This environment does not support game:HttpGet()."
+end
 
-	chunk()
+    if type(loadstring) ~= "function" then
+        return false, "loadstring is unavailable in this environment."
+    end
+
+    local okSource, source = pcall(function()
+        return game:HttpGet(url)
+    end)
+
+    if not okSource then
+        return false, "Failed to download target: " .. tostring(source)
+    end
+
+    if type(source) ~= "string" or source == "" then
+        return false, "Downloaded target is empty."
+    end
+
+	if #source < 20 then
+    return false, "Downloaded target is unexpectedly short."
+end
+
+    local chunk, compileError = loadstring(source)
+
+    if type(chunk) ~= "function" then
+        return false, "Target compile error: " .. tostring(compileError)
+    end
+
+    local okRun, runtimeError = pcall(chunk)
+
+    if not okRun then
+        return false, "Target runtime error: " .. tostring(runtimeError)
+    end
+
+    return true
 end
 
 local function submitKey()
@@ -383,51 +405,38 @@ local function submitKey()
 		return
 	end
 
-	if type(TARGET_URL) ~= "string" or TARGET_URL == "" then
-		checkButton.Text = "ERROR"
-		status.Text = "Target script URL is not configured."
-		busy = false
-		return
-	end
+checkButton.Text = "LOADING..."
+status.Text = "Key accepted. Loading..."
 
-	checkButton.Text = "SUCCESS"
-	status.Text = "Key accepted. Loading..."
+TweenService:Create(
+    keyStroke,
+    TweenInfo.new(0.15),
+    {
+        Color = Color3.fromRGB(70, 200, 120)
+    }
+):Play()
 
-	TweenService:Create(
-		keyStroke,
-		TweenInfo.new(0.15),
-		{
-			Color = Color3.fromRGB(70, 200, 120)
-		}
-	):Play()
+task.wait(0.5)
 
-	task.wait(0.5)
+local ok, err = loadTarget(TARGET_URL)
 
-	gui:Destroy()
+if not ok then
+    checkButton.Text = "ERROR"
+    status.Text = tostring(err)
+    busy = false
 
-	-- Сохраняем URL локально и очищаем глобальные значения,
-	-- чтобы следующий скрипт случайно их не использовал.
-	local url = TARGET_URL
+    TweenService:Create(
+        keyStroke,
+        TweenInfo.new(0.15),
+        {
+            Color = Color3.fromRGB(220, 70, 80)
+        }
+    ):Play()
 
-	ENV.TIKI_TARGET_URL = nil
-	ENV.TIKI_SCRIPT_NAME = nil
+    return
+end
 
-	task.defer(function()
-		local ok, err = pcall(function()
-			local source = game:HttpGet(url)
-			local chunk, compileError = loadstring(source)
-
-			if not chunk then
-				error(compileError or "Failed to compile target script")
-			end
-
-			chunk()
-		end)
-
-		if not ok then
-			warn("[Tiki Hub] Failed to load target script:", err)
-		end
-	end)
+gui:Destroy()
 end
 
 checkButton.MouseButton1Click:Connect(submitKey)
